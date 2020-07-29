@@ -17,14 +17,14 @@ def create_app(test_config=None):
 
   @app.after_request
   def after_request(response):
-      response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+      response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization,true')
       response.headers.add('Access-Control-Allow-Methods', 'GET POST PATCH, DELETE, OPTIONS')
       return response
 
 
 
 
-  @app.route('/categories')
+  @app.route('/categories', methods=['GET'])
   def get_categories():
       categories = Category.query.all()
       formatted_categories = [category.format() for category in categories]
@@ -36,7 +36,23 @@ def create_app(test_config=None):
       })
 
 
+  @app.route('/questions', methods=['GET'])
+  def get_questions():
+      page = request.args.get('page', 1, type=int)
+      start = (page - 1) * 10
+      end = start + 10
+      questions = Question.query.all()
+      formatted_questions = [question.format() for question in questions]
+      categories = Category.query.order_by(Category.type).all()
 
+      return jsonify({
+      'success': True,
+      'questions': formatted_questions[start:end],
+      'total questions': len(formatted_questions),
+      'categories': {category.id: category.type for category in categories},
+      'current_category': None
+
+      })
 
   '''
   @TODO:
