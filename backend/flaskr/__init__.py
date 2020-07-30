@@ -121,28 +121,43 @@ def create_app(test_config=None):
 
 
 
+  @app.route('/api/questions', methods=['POST'])
+  def post_question():
+      body = request.get_json()
 
-  '''
-  @TODO:
-  Create an endpoint to POST a new question,
-  which will require the question and answer text,
-  category, and difficulty score.
+      if (body['question'].strip()=="") or (body['answer'].strip()==""):
+          abort(400)
+      try:
+          new_question = Question(question=body['question'].strip(), answer=body['answer'].strip(),\
+          category=body['category'], difficulty=body['difficulty'])
+          new_question.insert()
 
-  TEST: When you submit a question on the "Add" tab,
-  the form will clear and the question will appear at the end of the last page
-  of the questions list in the "List" tab.
-  '''
+      except:
+          abort(422)
 
-  '''
-  @TODO:
-  Create a POST endpoint to get questions based on a search term.
-  It should return any questions for whom the search term
-  is a substring of the question.
+      return jsonify({
+        'success':True,
+        'added': new_question.id
+      })
 
-  TEST: Search by any phrase. The questions list will update to include
-  only question that include that string within their question.
-  Try using the word "title" to start.
-  '''
+  @app.route('/api/questions_search', methods=['POST'])
+  def search_question():
+      body = request.get_json()
+
+      if 'searchTerm' in body:
+          search_term = body['searchTerm'].strip()
+
+          questions = Question.query.filter(Question.question.ilike(f'%{search_term}%')).all()
+
+          results = [q.format() for q in questions]
+
+          return jsonify({
+            'success':True,
+            'questions': results
+          })
+
+
+
 
   '''
   @TODO:
@@ -166,10 +181,6 @@ def create_app(test_config=None):
   and shown whether they were correct or not.
   '''
 
-  '''
-  @TODO:
-  Create error handlers for all expected errors
-  including 404 and 422.
-  '''
+
 
   return app
