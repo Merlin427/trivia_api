@@ -12,7 +12,7 @@ def create_app(test_config=None):
   # create and configure the app
   app = Flask(__name__)
   setup_db(app)
-  CORS(app, resources={r"*": {'origins': '*'}})
+  CORS(app, resources={r"/api/*": {"origins": "*"}})
 
   def paginate_questions(request, questions_list):
       page = request.args.get('page', 1, type=int)
@@ -62,25 +62,32 @@ def create_app(test_config=None):
         'message': "Unprocessable entity"
       })
 
-  @app.route('/categories', methods=['GET'])
+  @app.route('/api/categories', methods=['GET'])
   def get_categories():
-      categories = Category.query.all()
-      formatted_categories = [category.format() for category in categories]
+      try:
 
-      return jsonify({
-        'success':True,
-        'categories': formatted_categories
+          categories = Category.query.all()
+          formatted_categories = [category.format() for category in categories]
 
-      })
+          return jsonify({
+            'success':True,
+            'categories': formatted_categories
+
+          })
+      except:
+          abort(500)
 
 
-  @app.route('/questions', methods=['GET'])
+  @app.route('/api/questions', methods=['GET'])
   def get_questions():
 
       questions_list = Question.query.all()
       paginated_questions=paginate_questions(request, questions_list)
 
       categories = Category.query.order_by(Category.type).all()
+
+      if len(paginated_questions) == 0:
+          abort(404)
 
       return jsonify({
       'success': True,
@@ -90,43 +97,30 @@ def create_app(test_config=None):
       'current_category': None
 
       })
-  '''
-  @app.route('questions/<int:q_id>', methods=['DELETE'])
+
+  @app.route('/api/questions/<int:q_id>', methods=['DELETE'])
   def delete_question(q_id):
-      question = Question.query.filter(Question.id == q_id).one_or_none()
-      question.delete()
-      questions_list = Question.query.order_by(Question.id).all()
-      paginated_questions = paginate_questions(request, questions_list)
-      return jsonify({
-        'success': True,
-        'deleted': q_id,
-        'questions': paginated_questions,
-        'total_questions': len(Question.query.all()),
-        'categories': get_category_list(),
-        'current_category': None
-      })
-  '''
+      question = Question.query.get(q_id)
+
+      if not question:
+          abort(404)
+
+      else:
+          try:
+              question.delete()
+
+              return jsonify({
+
+                'success': True,
+                'deleted': q_id
+
+              })
+          except:
+              abort(422)
 
 
 
 
-
-
-
-
-
-
-
-
-
-  '''
-
-  @TODO:
-  Create an endpoint to DELETE question using a question ID.
-
-  TEST: When you click the trash icon next to a question, the question will be removed.
-  This removal will persist in the database and when you refresh the page.
-  '''
 
   '''
   @TODO:
