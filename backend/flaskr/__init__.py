@@ -38,8 +38,29 @@ def create_app(test_config=None):
       return response
 
 
+  @app.errorhandler(400)
+  def bad_request(error):
+      return jsonify({
+        'success': False,
+        'error': 400,
+        'message': "Bad request"
+      })
 
+  @app.errorhandler(404)
+  def bad_request(error):
+      return jsonify({
+        'success': False,
+        'error': 404,
+        'message': "Not found"
+      })
 
+  @app.errorhandler(422)
+  def bad_request(error):
+      return jsonify({
+        'success': False,
+        'error': 422,
+        'message': "Unprocessable entity"
+      })
 
   @app.route('/categories', methods=['GET'])
   def get_categories():
