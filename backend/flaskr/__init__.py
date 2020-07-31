@@ -156,30 +156,46 @@ def create_app(test_config=None):
             'questions': results
           })
 
+  @app.route('/api/categories/<int:category_id>/questions')
+  def get_by_category(category_id):
+      questions = Question.query.filter_by(category=str(category_id)).all()
+
+      questions_list = paginate_questions(request, questions)
+      if len(questions_list)==0:
+          abort(404)
+
+      return jsonify({
+        'success':True,
+        'questions': questions_list,
+        'total_questions': len(questions),
+        'categories': Category.query.get(category_id).format(),
+        'current_category': category_id
+
+
+      })
 
 
 
-  '''
-  @TODO:
-  Create a GET endpoint to get questions based on category.
+  #'''
+  #@TODO:
+  #Create a GET endpoint to get questions based on category.
 
-  TEST: In the "List" tab / main screen, clicking on one of the
-  categories in the left column will cause only questions of that
-  category to be shown.
-  '''
+  #TEST: In the "List" tab / main screen, clicking on one of the
+  #categories in the left column will cause only questions of that
+  #category to be shown.
 
 
-  '''
-  @TODO:
-  Create a POST endpoint to get questions to play the quiz.
-  This endpoint should take category and previous question parameters
-  and return a random questions within the given category,
-  if provided, and that is not one of the previous questions.
 
-  TEST: In the "Play" tab, after a user selects "All" or a category,
-  one question at a time is displayed, the user is allowed to answer
-  and shown whether they were correct or not.
-  '''
+  #@TODO:
+  #Create a POST endpoint to get questions to play the quiz.
+  #This endpoint should take category and previous question parameters
+  #and return a random questions within the given category,
+  #if provided, and that is not one of the previous questions.
+
+  #TEST: In the "Play" tab, after a user selects "All" or a category,
+  #one question at a time is displayed, the user is allowed to answer
+  #and shown whether they were correct or not.
+  #'''
 
 
 
