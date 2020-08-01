@@ -175,61 +175,61 @@ def create_app(test_config=None):
       })
 
 
-  #@app.route('/api/quizzes', methods=['POST'])
-  #def play_quiz():
-    #  body = request.get_json()
-     # previous_questions = body.get('previous_questions',[])
-      #quiz_category = body.get('quiz_category',None)
+  @app.route('/api/quizzes', methods=['POST'])
+  def play_quiz():
+      body = request.get_json()
+      previous_questions = body.get('previous_questions',[])
+      quiz_category = body.get('quiz_category',None)
 
-      #try:
-        #  if quiz_category:
-        #      if quiz_category['id']==0:
-            #      filter_question=Question.query.all()
-             # else:
-            #      filter_question = Question.query.filter_by(category = quiz_category['id']).all()
+      try:
+          if quiz_category:
+              if quiz_category['id']==0:
+                  filter_question=Question.query.all()
+              else:
+                  filter_question = Question.query.filter_by(category = quiz_category['id']).all()
 
-          #if not filter_question:
-            #  return abort(422)
-         # data=[]
-          #for question in filter_question:
-            #  if question.id not in previous_questions:
-            #      data.append(question.format())
-         # if len(data) != 0:
-        #      result = random.choice(data)
-        #      return jsonify({
-        #        'question': result
-        #      })
-         # else:
-        #      return jsonify({
-        #        'question': False
-        #      })
-    #  except:
-    #      abort(422)
+          if not filter_question:
+              return abort(422)
+          data=[]
+          for question in filter_question:
+              if question.id not in previous_questions:
+                  data.append(question.format())
+          if len(data) != 0:
+              result = random.choice(data)
+              return jsonify({
+                'question': result
+              })
+          else:
+              return jsonify({
+                'question': False
+              })
+      except:
+          abort(422)
 
 
 
 
 
 #This code is Borrowed, just for testing purposes
-  @app.route('/api/quizzes', methods=['POST'])
-  def get_quizzes():
-      data = request.get_json()
-      previous_questions = data.get('previous_questions')
-      quiz_category = data.get('quiz_category')
-      quiz_category_id = int(quiz_category['id'])
+  #@app.route('/api/quizzes', methods=['POST'])
+  #def get_quizzes():
+    #  data = request.get_json()
+     # previous_questions = data.get('previous_questions')
+      #quiz_category = data.get('quiz_category')
+     # quiz_category_id = int(quiz_category['id'])
 
-      question = Question.query.filter(
-          Question.id.notin_(previous_questions)
-      )
+      #question = Question.query.filter(
+    #      Question.id.notin_(previous_questions)
+     # )
 
         # quiz category id is 0 if all is selected and therefore false
-      if quiz_category_id:
-          question = question.filter_by(category=quiz_category_id)
+      #if quiz_category_id:
+        #  question = question.filter_by(category=quiz_category_id)
 
         # limit result to only one question
-      question = question.first().format()
+     # question = question.first().format()
 
-      return jsonify({'success': True, 'question': question, }), 200
+      #return jsonify({'success': True, 'question': question, }), 200
 
 
 
