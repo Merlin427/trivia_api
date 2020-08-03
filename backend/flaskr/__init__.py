@@ -174,6 +174,7 @@ def create_app(test_config=None):
 
       })
 
+#This code is borrowed from the Udacity Knowledge base posted by Yousra A
 
   @app.route('/api/quizzes', methods=['POST'])
   def play_quiz():
@@ -210,52 +211,6 @@ def create_app(test_config=None):
 
 
 
-#This code is Borrowed, just for testing purposes
-  #@app.route('/api/quizzes', methods=['POST'])
-  #def get_quizzes():
-    #  data = request.get_json()
-     # previous_questions = data.get('previous_questions')
-      #quiz_category = data.get('quiz_category')
-     # quiz_category_id = int(quiz_category['id'])
-
-      #question = Question.query.filter(
-    #      Question.id.notin_(previous_questions)
-     # )
-
-        # quiz category id is 0 if all is selected and therefore false
-      #if quiz_category_id:
-        #  question = question.filter_by(category=quiz_category_id)
-
-        # limit result to only one question
-     # question = question.first().format()
-
-      #return jsonify({'success': True, 'question': question, }), 200
-
-
-
-
-
-
-  #'''
-  #@TODO:
-  #Create a GET endpoint to get questions based on category.
-
-  #TEST: In the "List" tab / main screen, clicking on one of the
-  #categories in the left column will cause only questions of that
-  #category to be shown.
-
-
-
-  #@TODO:
-  #Create a POST endpoint to get questions to play the quiz.
-  #This endpoint should take category and previous question parameters
-  #and return a random questions within the given category,
-  #if provided, and that is not one of the previous questions.
-
-  #TEST: In the "Play" tab, after a user selects "All" or a category,
-  #one question at a time is displayed, the user is allowed to answer
-  #and shown whether they were correct or not.
-  #'''
 
 
 
