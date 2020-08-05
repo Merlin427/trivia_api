@@ -174,6 +174,7 @@ def create_app(test_config=None):
 
       })
 
+
 #This code is borrowed from the Udacity Knowledge base posted by Yousra A
 
   @app.route('/api/quizzes', methods=['POST'])
@@ -210,7 +211,8 @@ def create_app(test_config=None):
 
 
 
-
+ # if __name__ == '__main__':
+#      app.run()
 
 
 

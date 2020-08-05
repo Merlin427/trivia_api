@@ -24,11 +24,38 @@ class TriviaTestCase(unittest.TestCase):
             self.db.init_app(self.app)
             # create all tables
             self.db.create_all()
-    
+
+        self.new_question = {
+            'question': 'At what racetrack did Ayrton Senna die?',
+            'answer': 'Imola',
+            'category': '6',
+            'difficulty': 1
+
+
+        }
+
     def tearDown(self):
         """Executed after reach test"""
         pass
 
+    def get_categories(self):
+        res = self.client().get('/api/categories')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(len(data['categories']), 6)
+
+    def get_questions(self):
+        res = self.client().get('/api/questions')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(len(data['categories']), 6)
+        self.assertEqual(data['total_questions'], 19)
+        self.assertEqual(len(data['questions']), 10)
+        self.assertEqual(data['questions'][0]['id'], 5)
     """
     TODO
     Write at least one test for each test for successful operation and for expected errors.
