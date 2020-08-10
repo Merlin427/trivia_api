@@ -32,7 +32,7 @@ This will install all of the required packages we selected within the `requireme
 
 ## Database Setup
 If you do not have PostgrSQL installed, install this first (https://www.postgresql.org/download/). From within the
-With Postgres running, first create the database 'trivia' by running 'postgres=# creaate database trivia;',
+With Postgres running, first create the database 'trivia' by running 'postgres=# create database trivia;',
 now restore a database using the trivia.psql file provided. From the backend folder in terminal run:
 ```bash
 psql trivia < trivia.psql
@@ -57,10 +57,11 @@ Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` d
 ## API Documentation
 
 
-###GET '/api/categories'
+### GET '/api/categories'
+
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
 - Request Arguments: None
-- Returns: An object with a single key, categories, that contains a object of id: category_string key:value pairs.
+- Returns: An object with a single key, categories, that contains a list of objects of id: category_string key:value pairs.
 
 ##### Example: 'curl http://localhost:5000/api/categories'
 
@@ -94,7 +95,42 @@ Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` d
   "success": true
 }
 
-###GET '/api/questions'
+### GET '/api/questions?page=1'
+
+- Fetches the questions to be displayed on page requested.
+- Request Arguments:'page' = Page number requested
+- The response body is as follows:
+                  "categories": A dictionary of categories with 'id' and 'type'
+                  "current_category": null
+                  "questions": A list of formatted question objects.
+                  "success": True (Indicates a successful request)
+                  "total_questions": The total number of questions.
+
+#### Example: 'curl http://localhost:5000/api/questions?page=1'
+
+{
+  "categories": {
+    "1": "Science",
+    "2": "Art",
+    ....
+  },
+  "current_category": null,
+  "questions": [
+    {
+      "answer": "Maya Angelou",
+      "category": 4,
+      "difficulty": 2,
+      "id": 5,
+      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+    }, ....
+
+  ], 
+  "success": true,
+  "total_questions": 19
+}
+
+
+
 
 ## Testing
 To run the tests, run
