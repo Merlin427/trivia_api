@@ -63,7 +63,10 @@ Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` d
 - Request Arguments: None
 - Returns: An object with a single key, categories, that contains a list of objects of id: category_string key:value pairs.
 
+
 ##### Example: 'curl http://localhost:5000/api/categories'
+
+
 
 {
   "categories": [
@@ -98,6 +101,7 @@ Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` d
 ### GET '/api/questions?page=1'
 
 - Fetches the questions to be displayed on page requested.
+- Paginates the response to limit questions to 10 per page.
 - Request Arguments:'page' = Page number requested
 - The response body is as follows:
 
@@ -111,7 +115,10 @@ Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` d
 
  "total_questions": The total number of questions.
 
+
 #### Example: 'curl http://localhost:5000/api/questions?page=1'
+
+
 
 {
   "categories": {
@@ -134,6 +141,18 @@ Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` d
   "total_questions": 19
 }
 
+### DELETE '/api/questions/<int:q_id>'
+
+- Deletes a question from the database.
+- Request parameters: question_id
+- If the delete is successful, this returns a 'success' status aling with the deleted question id
+
+#### Example: 'curl -X DELETE http://localhost:5000/api/questions/25'
+
+{
+  "deleted": 25,
+  "success": true
+}
 
 
 
