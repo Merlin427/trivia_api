@@ -218,7 +218,7 @@ def create_app(test_config=None):
           abort(422)
 
 
-
+# Some code borrowed from Udacity Knowledge questions and answers. Modified to suit case
 
   #if __name__ == '__main__':
 #      app.run()

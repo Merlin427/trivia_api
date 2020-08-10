@@ -154,6 +154,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(data['question'])
 
+# Some code borrowed from Udacity Knowledge questions and answers. Modified to suit case
 
 
 
