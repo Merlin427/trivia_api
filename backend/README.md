@@ -100,11 +100,11 @@ Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` d
 - Fetches the questions to be displayed on page requested.
 - Request Arguments:'page' = Page number requested
 - The response body is as follows:
-                  "categories": A dictionary of categories with 'id' and 'type'
-                  "current_category": null
-                  "questions": A list of formatted question objects.
-                  "success": True (Indicates a successful request)
-                  "total_questions": The total number of questions.
+                  - "categories": A dictionary of categories with 'id' and 'type'
+                  - "current_category": null
+                  - "questions": A list of formatted question objects.
+                  - "success": True (Indicates a successful request)
+                  - "total_questions": The total number of questions.
 
 #### Example: 'curl http://localhost:5000/api/questions?page=1'
 
@@ -124,7 +124,7 @@ Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` d
       "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
     }, ....
 
-  ], 
+  ],
   "success": true,
   "total_questions": 19
 }
