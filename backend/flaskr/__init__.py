@@ -37,6 +37,13 @@ def create_app(test_config=None):
       response.headers.add('Access-Control-Allow-Methods', 'GET POST PATCH, DELETE, OPTIONS')
       return response
 
+  @app.errorhandler(405)
+  def method_not_allowed(error):
+      return jsonify({
+      'success': False,
+      'error': 405,
+      'message': "Method not allowed"
+      })
 
   @app.errorhandler(400)
   def bad_request(error):
@@ -184,11 +191,12 @@ def create_app(test_config=None):
       quiz_category = body.get('quiz_category',None)
 
       try:
+          category_id= int(quiz_category['id'])+1
           if quiz_category:
               if quiz_category['id']==0:
                   filter_question=Question.query.all()
               else:
-                  filter_question = Question.query.filter_by(category = quiz_category['id']).all()
+                  filter_question = Question.query.filter_by(category = category_id).all()
 
           if not filter_question:
               return abort(422)
@@ -199,6 +207,7 @@ def create_app(test_config=None):
           if len(data) != 0:
               result = random.choice(data)
               return jsonify({
+                'success':True,
                 'question': result
               })
           else:
@@ -211,7 +220,7 @@ def create_app(test_config=None):
 
 
 
- # if __name__ == '__main__':
+  #if __name__ == '__main__':
 #      app.run()
 
 
