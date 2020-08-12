@@ -71,16 +71,24 @@ def create_app(test_config=None):
 
   @app.route('/api/categories', methods=['GET'])
   def get_categories():
-      try:
 
-          categories = Category.query.all()
-          formatted_categories = [category.format() for category in categories]
+      categories= Category.query.all()
+      if categories==0:
+          abort(422)
+
+
+
+      try:
+          categories = Category.query.order_by(Category.type).all()
+          formatted_categories = {category.id: category.type for category in categories}
 
           return jsonify({
             'success':True,
             'categories': formatted_categories
 
           })
+
+
       except:
           abort(500)
 
@@ -132,6 +140,8 @@ def create_app(test_config=None):
   def post_question():
       body = request.get_json()
 
+
+
       if (body['question'].strip()=="") or (body['answer'].strip()==""):
           abort(400)
       try:
@@ -181,7 +191,25 @@ def create_app(test_config=None):
 
       })
 
+ # @app.route("/api/quizzes", methods=["POST"])
+ # def get_quizzes():
+#      data = request.get_json()
+#      previous_questions = data.get("previous_questions")
+#      quiz_category = data.get("quiz_category")
+#      quiz_category_id = int(quiz_category["id"])
 
+#      question = Question.query.filter(
+#            Question.id.notin_(previous_questions)
+#      )
+
+        # quiz category id is 0 if all is selected and therefore false
+#      if quiz_category_id:
+#            question = question.filter_by(category=quiz_category_id)
+
+        # limit result to only one question
+#      question = question.first().format()
+
+#      return jsonify({"success": True, "question": question, }), 200
 #This code is borrowed from the Udacity Knowledge base posted by Yousra A
 
   @app.route('/api/quizzes', methods=['POST'])
@@ -191,7 +219,7 @@ def create_app(test_config=None):
       quiz_category = body.get('quiz_category',None)
 
       try:
-          category_id= int(quiz_category['id'])+1
+          category_id= int(quiz_category['id'])
           if quiz_category:
               if quiz_category['id']==0:
                   filter_question=Question.query.all()
