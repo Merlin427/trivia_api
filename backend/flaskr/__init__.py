@@ -101,26 +101,23 @@ def create_app(test_config=None):
   @app.route('/api/questions', methods=['GET'])
   def get_questions():
 
-      try:
-          questions_list = Question.query.all()
-          if len(questions_list)==0:
-              abort(404)
-          paginated_questions=paginate_questions(request, questions_list)
+      questions_list = Question.query.all()
+      paginated_questions=paginate_questions(request, questions_list)
 
 
-          categories = Category.query.order_by(Category.type).all()
+      categories = Category.query.order_by(Category.type).all()
 
-          return jsonify({
-          'success': True,
-          'questions': paginated_questions,
-          'total_questions': len(questions_list),
-          'categories': get_category_list(),
-          'current_category': None
+      
 
-          })
+      return jsonify({
+         'success': True,
+         'questions': paginated_questions,
+         'total_questions': len(questions_list),
+         'categories': get_category_list(),
+         'current_category': None
+         })
 
-      except:
-          abort (500)
+
 
   @app.route('/api/questions/<int:q_id>', methods=['DELETE'])
   def delete_question(q_id):
@@ -212,20 +209,20 @@ def create_app(test_config=None):
   @app.route('/api/quizzes', methods=['POST'])
   def play_quiz():
       body = request.get_json()
-      previous_questions = body.get('previous_questions',[])
-      quiz_category = body.get('quiz_category',None)
+      previous_questions = body.get('previous_questions', [])
+      quiz_category = body.get('quiz_category', None)
 
       try:
-          category_id= int(quiz_category['id'])
+          category_id = int(quiz_category['id'])
           if quiz_category:
-              if quiz_category['id']==0:
-                  filter_question=Question.query.all()
+              if quiz_category['id'] == 0:
+                  filter_question = Question.query.all()
               else:
                   filter_question = Question.query.filter_by(category = category_id).all()
 
           if not filter_question:
               return abort(422)
-          data=[]
+          data = []
           for question in filter_question:
               if question.id not in previous_questions:
                   data.append(question.format())
