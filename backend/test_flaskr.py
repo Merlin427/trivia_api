@@ -64,7 +64,14 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertEqual(len(data['categories']), 6)
 
+    def test_get_categories_fail(self):
+        res = self.client().get('/api/categories', json={"categories":{}})
+        data = json.loads(res.data)
 
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['error'], 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'Not found')
 
     def test_get_questions(self):
         res = self.client().get('/api/questions')

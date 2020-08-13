@@ -81,9 +81,10 @@ def create_app(test_config=None):
 
       try:
           categories = Category.query.order_by(Category.type).all()
-          if len(categories) == 0:
+          if len(categories)==0:
               abort(404)
           formatted_categories = {category.id: category.type for category in categories}
+
 
 
           return jsonify({
@@ -100,22 +101,26 @@ def create_app(test_config=None):
   @app.route('/api/questions', methods=['GET'])
   def get_questions():
 
-      questions_list = Question.query.all()
-      paginated_questions=paginate_questions(request, questions_list)
+      try:
+          questions_list = Question.query.all()
+          if len(questions_list)==0:
+              abort(404)
+          paginated_questions=paginate_questions(request, questions_list)
 
-      categories = Category.query.order_by(Category.type).all()
 
-      if len(paginated_questions) == 0:
-          abort(404)
+          categories = Category.query.order_by(Category.type).all()
 
-      return jsonify({
-      'success': True,
-      'questions': paginated_questions,
-      'total_questions': len(questions_list),
-      'categories': get_category_list(),
-      'current_category': None
+          return jsonify({
+          'success': True,
+          'questions': paginated_questions,
+          'total_questions': len(questions_list),
+          'categories': get_category_list(),
+          'current_category': None
 
-      })
+          })
+
+      except:
+          abort (500)
 
   @app.route('/api/questions/<int:q_id>', methods=['DELETE'])
   def delete_question(q_id):
