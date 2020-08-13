@@ -41,9 +41,20 @@ class TriviaTestCase(unittest.TestCase):
             }
         }
 
+        self.bad_quiz_category ={
+            'previous_questions':[5,9],
+            'quiz_category': {
+            'type': 'History'
+            }
+        }
+
+
+
     def tearDown(self):
         """Executed after reach test"""
         pass
+
+
 
     def test_get_categories(self):
         res = self.client().get('/api/categories')
@@ -52,6 +63,8 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertEqual(len(data['categories']), 6)
+
+
 
     def test_get_questions(self):
         res = self.client().get('/api/questions')
@@ -63,6 +76,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['total_questions'], 19)
         self.assertEqual(len(data['questions']), 10)
         self.assertEqual(data['questions'][0]['id'], 5)
+
 
     def test_if_paginated(self):
         res = self.client().get('/api/questions?page=2')
@@ -135,6 +149,8 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertEqual(res.status_code, 200)
 
+    def test_get_q_by_category_fail(self):
+
         res = self.client().post('/api/categories/50/questions')
         data = json.loads(res.data)
         self.assertEqual(data['success'], False)
@@ -147,12 +163,28 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertEqual(len(data['questions']), 1)
 
+    def test_question_search_fail(self):
+
+        res = self.client().post('/api/questions_search', json={'searchTerm': 'df9h4'})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['error'], 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'Not found')
+
     def test_play_quiz(self):
         res = self.client().post('/api/quizzes', json=self.quiz_category)
         data= json.loads(res.data.decode('utf-8'))
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertTrue(data['question'])
+
+    def test_play_quiz_fail(self):
+        res= self.client().post('/api/quizzes', json=self.bad_quiz_category)
+        data=json.loads(res.data.decode('utf-8'))
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['error'], 422)
 
 # Some code borrowed from Udacity Knowledge questions and answers. Modified to suit case
 

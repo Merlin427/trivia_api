@@ -68,19 +68,23 @@ def create_app(test_config=None):
         'error': 422,
         'message': "Unprocessable entity"
       })
+  @app.errorhandler(500)
+  def bad_request(error):
+      return jsonify({
+        'success': False,
+        'error': 500,
+        'message': "Internal server error"
+      })
 
   @app.route('/api/categories', methods=['GET'])
   def get_categories():
 
-      categories= Category.query.all()
-      if categories==0:
-          abort(422)
-
-
-
       try:
           categories = Category.query.order_by(Category.type).all()
+          if len(categories) == 0:
+              abort(404)
           formatted_categories = {category.id: category.type for category in categories}
+
 
           return jsonify({
             'success':True,
@@ -166,12 +170,19 @@ def create_app(test_config=None):
 
           questions = Question.query.filter(Question.question.ilike(f'%{search_term}%')).all()
 
+          if len(questions) == 0:
+              abort(404)
+
           results = [q.format() for q in questions]
+
+
 
           return jsonify({
             'success':True,
             'questions': results
           })
+
+
 
   @app.route('/api/categories/<int:category_id>/questions')
   def get_by_category(category_id):
@@ -191,25 +202,6 @@ def create_app(test_config=None):
 
       })
 
- # @app.route("/api/quizzes", methods=["POST"])
- # def get_quizzes():
-#      data = request.get_json()
-#      previous_questions = data.get("previous_questions")
-#      quiz_category = data.get("quiz_category")
-#      quiz_category_id = int(quiz_category["id"])
-
-#      question = Question.query.filter(
-#            Question.id.notin_(previous_questions)
-#      )
-
-        # quiz category id is 0 if all is selected and therefore false
-#      if quiz_category_id:
-#            question = question.filter_by(category=quiz_category_id)
-
-        # limit result to only one question
-#      question = question.first().format()
-
-#      return jsonify({"success": True, "question": question, }), 200
 #This code is borrowed from the Udacity Knowledge base posted by Yousra A
 
   @app.route('/api/quizzes', methods=['POST'])
