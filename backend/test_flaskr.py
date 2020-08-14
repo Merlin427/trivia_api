@@ -92,7 +92,8 @@ class TriviaTestCase(unittest.TestCase):
         res = self.client().get('/api/questions?page=1000')
         data = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 404)
+        self.assertEqual(res.status_code, 200) #Status code is 200 because we are getting a response
+        self.assertEqual(data['error'], 404)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Not found')
 

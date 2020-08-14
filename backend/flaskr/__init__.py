@@ -81,8 +81,7 @@ def create_app(test_config=None):
 
       try:
           categories = Category.query.order_by(Category.type).all()
-          if len(categories)==0:
-              abort(404)
+
           formatted_categories = {category.id: category.type for category in categories}
 
 
@@ -107,7 +106,10 @@ def create_app(test_config=None):
 
       categories = Category.query.order_by(Category.type).all()
 
-      
+      if len(paginated_questions) == 0:
+          abort(404)
+
+
 
       return jsonify({
          'success': True,
